@@ -21,7 +21,7 @@ namespace lab3
             NumThreads = numThreads;
         }
 
-        public Matrix Multiply(Matrix A, Matrix B)
+        public Matrix MultiplyParallel(Matrix A, Matrix B)
         {
             if (A.Cols != B.Rows) return A;
             Matrix result = new Matrix(A.Rows, B.Cols);
@@ -44,6 +44,48 @@ namespace lab3
             return result;
         }
 
+        public Matrix MultiplyThread(Matrix A, Matrix B)
+        {
+            Matrix result = new Matrix(A.Rows, B.Cols);
+            Thread[] threads = new Thread[NumThreads];
+
+            int rowsPerThread = A.Rows / NumThreads;
+            int remainingRows = A.Rows % NumThreads;
+
+            for (int t = 0; t < NumThreads; t++)
+            {
+                int startRow = t * rowsPerThread;
+                int endRow;
+                if (remainingRows > 0) { endRow = startRow + rowsPerThread + 1;  remainingRows--;  } //distributes remaining rows between threads
+                else { endRow = startRow + rowsPerThread;  } //if there no rows to remaining
+
+                threads[t] = new Thread(() =>
+                {
+                    for (int i = startRow; i < endRow; i++)
+                    {
+                        for (int j = 0; j < B.Cols; j++)
+                        {
+                            float sum = 0;
+                            for (int k = 0; k < A.Cols; k++)
+                            {
+                                sum += A.Values[i, k] * B.Values[k, j];
+                            }
+                            result.Values[i, j] = sum;
+                        }
+                    }
+                });
+
+                threads[t].Start();
+            }
+
+            //wait for all threads to finish
+            for (int t = 0; t < NumThreads; t++)
+            {
+                threads[t].Join();
+            }
+
+            return result;
+        }
 
 
     }

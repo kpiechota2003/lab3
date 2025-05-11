@@ -28,29 +28,11 @@ namespace lab3
             FillWithRandomValues();
         }
 
-        private void FillWithRandomValues()
+        public void FillWithRandomValues()
         {
             for (int i = 0; i < Rows; i++)
                 for (int j = 0; j < Cols; j++)
                     Values[i, j] = (float)Math.Round(random.NextDouble(), 2);
-        }
-
-        private void ValidateIndices(int row, int col)
-        {
-            if (row < 0 || row >= Rows || col < 0 || col >= Cols)
-                throw new IndexOutOfRangeException("Row or column index is out of range.");
-        }
-
-        public float GetValue(int row, int col)
-        {
-            ValidateIndices(row, col);
-            return Values[row, col];
-        }
-
-        public void SetValue(int row, int col, float value)
-        {
-            ValidateIndices(row, col);
-            Values[row, col] = value;
         }
 
         public override string ToString()

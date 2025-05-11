@@ -6,17 +6,12 @@ namespace lab3
     {
         static void Main(string[] args)
         {
-            Matrix A = new Matrix(500, 300);
-            Matrix B = new Matrix(300, 400);
+            int[] Threads = { 1, 2, 3, 4 };
+            int[] Sizes = { 100, 220, 500 };
 
-            Multiplication mult = new Multiplication(numThreads: 4);
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            Matrix result = mult.Multiply(A, B);
-
-            stopwatch.Stop();
-            Console.WriteLine($"Mnożenie zajęło: {stopwatch.ElapsedMilliseconds} ms");
+            Tests T = new Tests(Threads, Sizes);
+            T.DoTests(3, Tests.TestType.PARALLEL, "C:\\Users\\user1\\Desktop\\NET_lab3\\parallel.csv");
+            T.DoTests(3, Tests.TestType.THREAD, "C:\\Users\\user1\\Desktop\\NET_lab3\\thread.csv");
         }
     }
 }
